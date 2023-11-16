@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="/static/mujstyl.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+    <script src="{{ url_for('static', filename='render/script.js') }}"></script>
+    <title>Úvodní stránka</title>
+    <style>
+        body, html{
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <h1>Rozsazení v lodích na vodáckém kurzu 2023 SPŠE Ječná</h1>
+
+    <p>Ahoj světe!</p>
+    <div id="canSwim">
+        <span>Umím plavat</span>
+    </div>
+    <p><a href="{{ url_for('render.register') }}">Registrace</a>.</p>
+    <div id="confirm">
+
+    </div>
+    <script>
+
+
+        const user_id = getCookie('user_id');
+
+        const cs = document.getElementById('canSwim')
+        let tmp = document.createElement('input');
+        tmp.type='checkbox'
+        tmp.id='canSwim_input'
+        cs.append(tmp)
+
+        tmp.addEventListener('click', function () {
+            fetch(
+                '/api/user/canSwim/',
+                {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "user-id": user_id
+                    },
+                    body:JSON.stringify({
+                        'canSwim':tmp.checked,
+                        'user': user_id
+                    })
+                }
+            ).then(response => {
+                if (response.status===200){
+                    return response.json()
+                }
+                return {}
+            }).then(data => {
+                console.log('canSwim zapsáno')
+                if (tmp.checked){
+                    alert('Už umíš plavat')
+                }else{
+                    alert('Už neumíš plavat, tak se sem nehlas')
+                }
+            })
+        })
+
+        function postConfirm(sender, reciever){
+            if(!document.getElementById('canSwim_input').checked){
+                alert('Nehlas se když neumíš plavat!!!')
+                throw new Error('Chyba')
+            }
+            console.log("post comfirm "+sender+" ==> "+reciever)
+            return fetch(
+                '/api/user/result/',
+                {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "user-id": sender
+                    },
+                    body:JSON.stringify({
+                        'sender':sender,
+                        'reciever': reciever
+                    })
+                }
+
+            ).then(response => {
+                if (response.status===200){
+                    return response.json()
+                }
+                return {}
+            })
+        }
+
+        function getUsername(user_id){
+            return fetch(
+                '/api/user/'+user_id+'/',
+                {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "user-id": user_id
+                    },
+                }
+
+            )
+            .then(response => {
+                if (response.status === 200) { // Kontrola, zda je status 201 Created
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then(data => {
+                return data
+            })
+        }
+
+        function getConfirms(){
+            return fetch(
+                '/api/user/my_requests/',
+                {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "user-id": user_id
+                    },
+                }
+            )
+            .then(response => {
+                if (response.status === 200) { // Kontrola, zda je status 201 Created
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then(data => {
+                return data['requests']
+            })
+            .catch(error => {
+                console.error('Chyba: ' + error);
+            });
+        }
+
+
+        const confirmDiv = document.getElementById("confirm");
+        getUsername(user_id).then(data => {
+            console.log(data)
+            let tmp = document.getElementById('canSwim_input')
+            tmp.checked=data['canSwim']
+            if (data["finish"]===false){
+                const confirms = getConfirms().then(data =>{
+                    console.log(data)
+                    for(let i=0; i<data.length; i++){
+                        const button = document.createElement('button');
+                        confirmDiv.append(button)
+                        button.id='user_'+data[i]['user_id'];
+                        getUsername(data[i]['user_id']).then(data => {
+                            button.textContent=data['username'];
+                        });
+                        button.addEventListener(
+                            'click',
+                            function (){
+                                try{
+                                    postConfirm(user_id, data[i]['user_id']).then(data => {
+                                        confirmDiv.innerHTML='';
+                                        infoParagraph = document.createElement('p');
+                                        infoParagraph.textContent = 'Byl jste už zapsán do systému'
+                                        confirmDiv.append(infoParagraph)
+                                        infoParagraph.style.color='green';
+                                    });
+                                }catch(e){
+                                    console.log('nenastalo, protože jsi neplavec!!!')
+                                }
+                            }
+                        )
+                    }
+                })
+            }else{ //ukončeno
+                infoParagraph = document.createElement('p');
+                infoParagraph.textContent = 'Byl jste už zapsán do systému'
+                confirmDiv.append(infoParagraph)
+                infoParagraph.style.color='green';
+            }
+        })
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='body.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login/switch.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+    <style>
+        html,body{
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+  <script src="{{ url_for('static', filename='login/script.js') }}"></script>
+  <div id="page_content">
+    {% if error_message is defined and not error_message == None %}
+    <div class="error" id="error_div">
+      <p>{{error_message}}</p>
+      <button class="close-btn" onclick="close_button()">Zavřít</button>
+    </div>
+    {% endif %}
+    <form method="POST" autocomplete="off" class="form">
+      <h2>Přihlásit se</h2>
+      <div class="input element">
+        <input name="username" placeholder="Uživatelské jméno" type="text"
+        {% if username is defined %}value={{username}}{% endif %}
+        >
+      </div>
+      <div class="input element">
+        <input name="password" id="password_input" placeholder="Heslo" type="password">
+      </div>
+      <div class="container_switch">
+        <label class="switch">
+          <input type="checkbox" onclick="switch_function()">
+          <span class="slider"></span>
+        </label>
+        <p id="switch_paragraph">zobrazit heslo</p>
+      </div>
+      <div class="element">
+        <input type="submit" value="přihlásit se"></input>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

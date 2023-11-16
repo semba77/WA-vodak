@@ -1,0 +1,17 @@
+<nav>
+    <ul>
+        <li id="account">
+            {% if is_auth() == true %}
+            <a href= "{{url_for('render.get_logout')}}">odhlásit se</a>
+            {% else %}
+                <a href= "{{url_for('render.get_login')}}">přihlásit se</a>
+            {% endif %}
+        </li>
+        <li id="menu">
+            <a href= "{{url_for('render.index')}}">menu</a>
+        </li>
+        <li id="show">
+            <a href= "{{url_for('render.show')}}">zobrazit</a>
+        </li>
+    </ul>
+</nav>

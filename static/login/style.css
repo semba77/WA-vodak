@@ -1,0 +1,67 @@
+body {
+    background-color: #006eff;
+    color: #fff;
+    font-family: monospace, serif;
+    letter-spacing: 0.05em;
+  }
+  .form {
+    width: 300px;
+    padding: 100px 15px 24px;
+    margin: 0 auto;
+  }
+  
+  input button {
+    width: 100%;
+  }
+  
+  .form > .input > input {
+    color: #000000;
+    border-style: solid;
+    border-color: rgb(255, 255, 255);
+    margin-bottom: 5px;
+    height: 20px;
+  }
+  
+  .form > .element {
+    width: 90%;
+  }
+  
+  /* odstraňuje očíčko u hesla*/
+  input[type="password"]::-ms-reveal  {
+    display: none;
+  }
+  input:focus {
+    outline: none;
+  }
+  
+  h2 {
+    margin-bottom: 10px;
+    text-shadow: 2px 2px #3100f6;
+  }
+  .error {
+    position: absolute;
+    padding: 0px;
+    background-color: rgb(236, 117, 117);
+    border-width: 5px;
+    border-color: red;
+    border-style: solid;
+    color: #fff;
+    height: 15px;
+    width: calc(100% - 10px);
+    height: 40px;
+  }
+  
+  .error > p{
+    margin: 0;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #ccc;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  

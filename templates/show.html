@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{ url_for('static', filename='render/script.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+    <title>Document</title>
+    <style>
+        html, body{
+            margin: 0;
+        }
+        #content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Výška viewportu */
+          }
+          
+          table {
+            border-collapse: collapse;
+            width: 50%; /* Šířka tabulky */
+          }
+          
+          table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+          }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div id="content">
+        <table id="table">
+            <tr>
+                <th>1.žák</th>
+                <th>2.žák</th>
+            </tr>
+        </table>
+    </div>
+    <script>
+        const table = document.getElementById('table');
+        fetchAllFinishedRegistrations().then(data => {
+            for(let i=0; i<data.length; i++){
+                const tr = document.createElement('tr');
+                table.append(tr);
+                const th1 = document.createElement('th');
+                const th2 = document.createElement('th');
+                tr.append(th1);
+                tr.append(th2);
+                th1.textContent=data[i]["u1"]
+                th2.textContent=data[i]["u2"]
+
+            }
+        })
+    </script>
+</body>
+</html>

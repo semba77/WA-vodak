@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+
+    <script src="{{ url_for('static', filename='render/script.js') }}"></script>
+    <title>Document</title>
+
+    <style>
+        html, body{
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <h1>Registrace</h1>
+    <div id="div_form" >
+        <form action="">
+            <div id="div_nickname">
+                <input id="input_nickname" type="text" placeholder="Nickname" name="nick">
+            </div>
+            <div id="div_swimming">
+                <label>Plavec</label><input  id="input_swimming" type="checkbox" name="je_plavec">
+            </div>
+            <div id="div_friend">
+                <textarea id="input_friend" cols="30" rows="10" placeholder="Kamarád" name="kenoe_kamarad"></textarea>
+            </div>
+            <div id="div_buttons">
+                <button type="button" id="btn_storno">Storno</button>
+                <button type="button" id="btn_submit">Odelat</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.getElementById("btn_storno").addEventListener("click", function() {
+            window.location = "/";
+        });
+        fetchUser(getCookie("user_id")).then(data => {
+            console.log(data)
+            console.log(data["finish"])
+            if (!data["finish"]){
+                document.getElementById("btn_submit").addEventListener("click", function() {
+                    const data = {
+                        "nick":document.getElementById("input_nickname").value,
+                        "je_plavec":document.getElementById("input_swimming").checked,
+                        "kanoe_kamarad":document.getElementById("input_friend").value
+                    };
+                    sendForm(data);
+                });
+                fetchUsername(getCookie("user_id"), document.getElementById("input_nickname"));
+            }else{
+                const tmp = document.getElementById('div_form');
+                tmp.innerHTML='';
+                tmp.innerHTML='<p style="color:green;">Byl jste už zapsán do systému</p>'
+            }
+        })
+    </script>
+</body>
+</html>
